@@ -1,5 +1,13 @@
-export const ImageGalleryItem = () => (
-  <li class="gallery-item">
-    <img src="" alt="" />
-  </li>
-);
+export const ImageGalleryItem = (({ id, alt, src }) => {
+  return (
+    <li className="ImageGalleryItem" key={id}>
+      <img
+        className="ImageGalleryItem-image"
+        src={src}
+        alt={alt}
+      />
+    </li>
+  );
+   })
+  
+  

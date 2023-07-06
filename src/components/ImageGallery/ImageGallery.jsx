@@ -1,22 +1,11 @@
-import { Component } from "react";
-import { getPictures }  from 'api';
+import { ImageGalleryItem } from "components/ImageGalleryItem/ImageGalleryItem";
 
-export class ImageGallery extends Component {
-  state = {
-    
-  }
-    
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.valueToSearch !== this.props.valueToSearch) {
-      getPictures(this.props.valueToSearch).then(
-        resp => console.log(resp)
-      );
-        
-      }
-    }
-  render() {
-    return (
-      <ul className="gallery">{/* <!-- Набір <li> із зображеннями --> */}</ul>
-    );
-    }
+export const ImageGallery =({pictures}) => {
+  return (
+    <ul className="ImageGallery">
+    {pictures.map(({ id, tags, webformatURL }) => {
+      return <ImageGalleryItem key={id} alt={tags} src={webformatURL} />;
+    })}
+  </ul>
+  )
 }

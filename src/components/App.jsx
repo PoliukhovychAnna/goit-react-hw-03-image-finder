@@ -1,67 +1,72 @@
 import { Component } from "react"
 import { Searchbar } from "./Searchbar/Searchbar"
 import { ImageGallery } from "./ImageGallery/ImageGallery"
+import { getPictures } from "services/api";
+import { Button } from "./Button/Button";
 
 
 export class App extends Component {
   state = {
-  searchValue:'',
+    page: 1,
+    searchValue: '',
+    pictures: [],
+    isLoading: false,
+    error: null,
+    isShowButton: false,
+    isEmpty: true,
+    per_page: 12,
   };
 
-  
-  handleSearch = (value) => {
-  this.setState({searchValue:value})
-}
+  componentDidUpdate(prevProps, prevState) {
+    const { searchValue, page } = this.state;
+    if (prevState.searchValue !== searchValue || prevState.page !== page) {
+      this.searchPictures(searchValue, page);
+    }
+  }
 
+  handleSearch = value => {
+    this.setState({ searchValue: value, page: 1, pictures: [], isShowButton: false});
+  };
 
- 
- 
+  searchPictures = async (query, currentPage) => {
+    this.setState({ isLoading: true, isEmpty: false });
+    try {
+      const { total, hits } = await getPictures(query, currentPage);
 
-  
-   
+      this.setState(prevState => ({
+        pictures: [...prevState.pictures, ...hits],
+        isShowButton: currentPage < Math.ceil(total / this.state.per_page),
+        isEmpty: false,
+      }));
 
-  // getPictures = async(value) => {
-  //   const response = await axios.get(refs.URL, {
-  //     params: {
-  //       key: refs.API_KEY,
-  //           q: value,
-  //           image_type: 'photo',
-  //           orientation: 'horizontal',
-  //           safesearch: true,
-  //           page: this.state.page,
-  //           per_page: this.state.per_page,
-  //     },
-  //   })
-  //   console.log(response);
-  // return response
-  //   }
+      if (!this.state.pictures) {
+        this.setState({ isEmpty: true });
+        return;
+      }
+    } catch (error) {
+      this.setState({ error: error.message });
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  };
 
-    render() {
-  
+  handleClickBtn = () => {
+    this.setState(prev => ({
+      page: prev.page + 1,
+    }));
+  };
+
+  render() {
+    const { pictures, isLoading, isEmpty, isShowButton } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleSearch} />
-        <ImageGallery valueToSearch={this.state.searchValue} />
+        {isEmpty && 'There are no pictures here!'}
+        {isLoading && 'Loading...'}
+        {pictures && <ImageGallery pictures={pictures} />}
+        {isShowButton && <Button onClick={this.handleClickBtn} />}
       </>
     );
   }
 }
-
-// async function getPictures() {
-//   try {
-//     const response = await axios.get(URL, {
-//       params: {
-//         key: this.API_KEY,
-//         q: value,
-//         image_type: 'photo',
-//         orientation: 'horizontal',
-//         safesearch: true,
-//         page: this.page,
-//         per_page: this.per_page,
-//       },
-//     });
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
 
