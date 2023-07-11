@@ -1,8 +1,14 @@
-import { Component } from "react"
+import { Component, React } from "react"
+import Modal from 'react-modal';
 import { Searchbar } from "./Searchbar/Searchbar"
 import { ImageGallery } from "./ImageGallery/ImageGallery"
 import { getPictures } from "services/api";
 import { Button } from "./Button/Button";
+
+Modal.setAppElement('#root');
+const bodyScrollLock = require('body-scroll-lock');
+const disableBodyScroll = bodyScrollLock.disableBodyScroll;
+const enableBodyScroll = bodyScrollLock.enableBodyScroll;
 
 
 export class App extends Component {
@@ -13,8 +19,9 @@ export class App extends Component {
     isLoading: false,
     error: null,
     isShowButton: false,
-    isEmpty: true,
+    isEmpty: false,
     per_page: 12,
+    modalIsOpen: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -25,11 +32,16 @@ export class App extends Component {
   }
 
   handleSearch = value => {
-    this.setState({ searchValue: value, page: 1, pictures: [], isShowButton: false});
+    this.setState({
+      searchValue: value,
+      page: 1,
+      pictures: [],
+      isShowButton: false,
+    });
   };
 
   searchPictures = async (query, currentPage) => {
-    this.setState({ isLoading: true, isEmpty: false });
+    this.setState({ isLoading: true });
     try {
       const { total, hits } = await getPictures(query, currentPage);
 
@@ -39,10 +51,16 @@ export class App extends Component {
         isEmpty: false,
       }));
 
-      if (!this.state.pictures) {
+      if (!total) {
         this.setState({ isEmpty: true });
         return;
       }
+
+      this.setState(prevState => ({
+        pictures: [...prevState.pictures, ...hits],
+        isShowButton: currentPage < Math.ceil(total / this.state.per_page),
+        isEmpty: false,
+      }));
     } catch (error) {
       this.setState({ error: error.message });
     } finally {
@@ -56,14 +74,22 @@ export class App extends Component {
     }));
   };
 
+  openModal = () => {
+    this.setState({ modalIsOpen: true });
+  };
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false });
+  };
+
   render() {
-    const { pictures, isLoading, isEmpty, isShowButton } = this.state;
+    const { pictures, isLoading, isEmpty, isShowButton, modalIsOpen } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleSearch} />
         {isEmpty && 'There are no pictures here!'}
         {isLoading && 'Loading...'}
-        {pictures && <ImageGallery pictures={pictures} />}
+        {pictures && <ImageGallery pictures={pictures} onOpenModal={this.openModal} onCloseModal={this.closeModal} isOpen={modalIsOpen} />}
         {isShowButton && <Button onClick={this.handleClickBtn} />}
       </>
     );
