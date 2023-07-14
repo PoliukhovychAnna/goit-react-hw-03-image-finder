@@ -1,5 +1,6 @@
-export const Button = ({onClick}) => (
+import { LoadMoreBtn } from "./Styled.Button";
+export const Button = ({ onClick }) => (
   <>
-    <button className="Button" type="button" onClick={onClick}>Load more</button>
+    <LoadMoreBtn type="button" onClick={onClick}>Load more</LoadMoreBtn>
   </>
 );

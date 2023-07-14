@@ -12,8 +12,9 @@ const baseURL = 'https://pixabay.com/api/';
 // };
 
 
-export const getPictures = async (query, page) => {
-        const response = await axios.get(baseURL, {
+export const getPictures = async (query, page, signal) => {
+  const response = await axios.get(baseURL, {
+          signal,
           params: {
             key: API_KEY,
             q: query,

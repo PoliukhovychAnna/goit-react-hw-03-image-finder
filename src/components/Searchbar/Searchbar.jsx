@@ -1,5 +1,12 @@
 import { Component } from 'react';
 import { BsSearch } from 'react-icons/bs';
+import {
+  SearchbarStyles,
+  SearchForm,
+  SearchFormButton,
+  ButtonLabel,
+  SearchFormInput,
+} from './Styled.Searchbar';
 
 
 export class Searchbar extends Component {
@@ -22,24 +29,23 @@ export class Searchbar extends Component {
 
     render() {
     return (
-      <header className="Searchbar">
-        <form className="SearchForm" onSubmit={this.handleSubmit}>
-          <button type="submit" className="SearchForm-button">
+      <SearchbarStyles>
+        <SearchForm className="SearchForm" onSubmit={this.handleSubmit}>
+          <SearchFormButton type="submit">
             <BsSearch size="2em" />
-            <span className="SearchForm-button-label">Search</span>
-          </button>
+            <ButtonLabel>Search</ButtonLabel>
+          </SearchFormButton>
 
-          <input
-            className="SearchForm-input "
-                    type="text"
-                    value={this.state.value}
-                    onChange={this.handleChange}
+          <SearchFormInput
+            type="text"
+            value={this.state.value}
+            onChange={this.handleChange}
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
           />
-        </form>
-      </header>
+        </SearchForm>
+      </SearchbarStyles>
     );
     }
     

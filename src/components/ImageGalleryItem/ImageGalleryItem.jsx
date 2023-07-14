@@ -1,16 +1,7 @@
-import { Modal } from "components/Modal/Modal";
+import { ModalWindow } from "components/Modal/Modal";
 import { Component } from "react";
-// export const ImageGalleryItem = (({ id, alt, src, modal, onOpen, onClose, isOpen }) => {
-//   return (
-//     <>
-//       <li className="ImageGalleryItem" key={id} onClick={onOpen}>
-//         <img className="ImageGalleryItem-image" src={src} alt={alt} />
-//       </li>
-//       {isOpen && <Modal img={modal} alt={alt} onClose={onClose} />}
-//     </>
-//   );
-//    })
-  
+import { GalleryImg } from './Styled.GalleryItem';
+
 
 export class ImageGalleryItem extends Component {
   state = {
@@ -30,9 +21,14 @@ export class ImageGalleryItem extends Component {
     const {picture: {webformatURL, largeImageURL, tags}} = this.props
     return (
       <>
-        <img src={webformatURL} alt={tags} onClick={this.openModal} />
+        <GalleryImg src={webformatURL} alt={tags} onClick={this.openModal} />
         {isModalOpen && (
-          <Modal isOpen={isModalOpen} img={largeImageURL} alt={tags} onClose={this.closeModal} />
+          <ModalWindow
+            isOpen={isModalOpen}
+            img={largeImageURL}
+            alt={tags}
+            onClose={this.closeModal}
+          />
         )}
       </>
     );
