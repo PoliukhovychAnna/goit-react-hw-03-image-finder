@@ -1,15 +1,9 @@
-import { Component, React } from "react"
-import Modal from 'react-modal';
-import { Searchbar } from "./Searchbar/Searchbar"
-import { ImageGallery } from "./ImageGallery/ImageGallery"
-import { getPictures } from "services/api";
-import { Button } from "./Button/Button";
+import { Component, React } from 'react';
 
-Modal.setAppElement('#root');
-const bodyScrollLock = require('body-scroll-lock');
-const disableBodyScroll = bodyScrollLock.disableBodyScroll;
-const enableBodyScroll = bodyScrollLock.enableBodyScroll;
-
+import { Searchbar } from '../Searchbar/Searchbar';
+import { ImageGallery } from '../ImageGallery/ImageGallery';
+import { getPictures } from 'services/api';
+import { Button } from '../Button/Button';
 
 export class App extends Component {
   state = {
@@ -21,7 +15,6 @@ export class App extends Component {
     isShowButton: false,
     isEmpty: false,
     per_page: 12,
-    modalIsOpen: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -74,25 +67,16 @@ export class App extends Component {
     }));
   };
 
-  openModal = () => {
-    this.setState({ modalIsOpen: true });
-  };
-
-  closeModal = () => {
-    this.setState({ modalIsOpen: false });
-  };
-
   render() {
-    const { pictures, isLoading, isEmpty, isShowButton, modalIsOpen } = this.state;
+    const { pictures, isLoading, isEmpty, isShowButton } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleSearch} />
         {isEmpty && 'There are no pictures here!'}
         {isLoading && 'Loading...'}
-        {pictures && <ImageGallery pictures={pictures} onOpenModal={this.openModal} onCloseModal={this.closeModal} isOpen={modalIsOpen} />}
+        {pictures && <ImageGallery pictures={pictures} />}
         {isShowButton && <Button onClick={this.handleClickBtn} />}
       </>
     );
   }
 }
-
