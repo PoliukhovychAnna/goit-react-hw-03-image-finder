@@ -24,7 +24,7 @@ export const getPictures = async (query, page, signal) => {
             page: page,
             per_page: 12,
           },
-        });
+  });
         return response.data;
       } 
 

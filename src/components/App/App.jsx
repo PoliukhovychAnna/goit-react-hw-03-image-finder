@@ -22,10 +22,16 @@ export class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { searchValue, page } = this.state;
+    const { searchValue, page, pictures } = this.state;
     if (prevState.searchValue !== searchValue || prevState.page !== page) {
       this.searchPictures(searchValue, page);
-    }
+    } 
+      if (prevState.pictures !== pictures && page !== 1) {
+        window.scrollBy({
+          top: 300 * 2,
+          behavior: 'smooth',
+        });
+      }
   }
 
   handleSearch = value => {
@@ -58,12 +64,6 @@ export class App extends Component {
         this.abortCtrl.signal
       );
 
-      this.setState(prevState => ({
-        pictures: [...prevState.pictures, ...hits],
-        isShowButton: currentPage < Math.ceil(total / this.state.per_page),
-        isEmpty: false,
-      }));
-
       if (!total) {
         this.setState({ isEmpty: true });
         return;
@@ -86,7 +86,7 @@ export class App extends Component {
   handleClickBtn = () => {
     this.setState(prev => ({
       page: prev.page + 1,
-    }));
+    }))
   };
 
   render() {
