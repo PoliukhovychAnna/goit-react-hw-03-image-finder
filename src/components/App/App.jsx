@@ -4,7 +4,8 @@ import { Searchbar } from '../Searchbar/Searchbar';
 import { ImageGallery } from '../ImageGallery/ImageGallery';
 import { getPictures } from 'services/api';
 import { Button } from '../Button/Button';
-import { EmptyMessage } from 'components/Loader/Styled.loader';
+import { Message } from 'components/Loader/Styled.loader';
+import { Loader } from 'components/Loader/Loader';
 
 export class App extends Component {
   abortCtrl;
@@ -28,11 +29,16 @@ export class App extends Component {
   }
 
   handleSearch = value => {
+     if (this.state.searchValue === value) {
+       return;
+     }
     this.setState({
       searchValue: value,
       page: 1,
       pictures: [],
       isShowButton: false,
+      isEmpty: false,
+      error:null,
     });
   };
 
@@ -69,32 +75,30 @@ export class App extends Component {
         isEmpty: false,
       }));
     } catch (error) {
-      this.setState({ error: error.message });
+      if (error.code !== 'ERR_CANCELED') {
+        this.setState({ error: error.message })
+      }
     } finally {
       this.setState({ isLoading: false });
     }
   };
 
   handleClickBtn = () => {
-     window.scrollBy({
-       top: 260 * 2,
-       behavior: 'smooth',
-     })
-
     this.setState(prev => ({
       page: prev.page + 1,
     }));
   };
 
   render() {
-    const { pictures, isLoading, isEmpty, isShowButton } = this.state;
+    const { pictures, isLoading, isEmpty, isShowButton, error } = this.state;
     return (
       <WrapperApp>
         <Searchbar onSubmit={this.handleSearch} />
-        {isEmpty && <EmptyMessage>There are no pictures here!</EmptyMessage>}
-        {isLoading && 'Loading...'}
+        {isEmpty && <Message>There are no pictures here!</Message>}
+        {isLoading && <Loader/>}
         {pictures && <ImageGallery pictures={pictures} />}
         {isShowButton && <Button onClick={this.handleClickBtn} />}
+        {error && <Message>{error}</Message> }
       </WrapperApp>
     );
   }

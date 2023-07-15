@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import Modal from 'react-modal';
 Modal.setAppElement('#root');
@@ -38,3 +39,10 @@ export const ModalWindow = ({ isOpen, img, alt, onClose }) => (
     <img src={img} alt={alt} />
   </Modal>
 );
+
+ModalWindow.propTypes = {
+  img: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+};

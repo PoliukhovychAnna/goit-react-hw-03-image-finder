@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import {
@@ -8,29 +9,30 @@ import {
   SearchFormInput,
 } from './Styled.Searchbar';
 
-
 export class Searchbar extends Component {
   state = {
     value: '',
-    };
-    
+  };
 
-    handleSubmit = (e) => {
-        e.preventDefault()
-        const value = this.state.value;
-        
-        this.props.onSubmit(value)
-        this.setState({ value: ''});
-    };
-
-    handleChange = ({target:{value}}) => {
-        this.setState({value})
+  handleSubmit = e => {
+    e.preventDefault();
+    const value = this.state.value;
+    if (!value.trim()) {
+      return;
     }
 
-    render() {
+    this.props.onSubmit(value);
+    this.setState({ value: '' });
+  };
+
+  handleChange = ({ target: { value } }) => {
+    this.setState({ value });
+  };
+
+  render() {
     return (
       <SearchbarStyles>
-        <SearchForm className="SearchForm" onSubmit={this.handleSubmit}>
+        <SearchForm onSubmit={this.handleSubmit}>
           <SearchFormButton type="submit">
             <BsSearch size="2em" />
             <ButtonLabel>Search</ButtonLabel>
@@ -47,6 +49,10 @@ export class Searchbar extends Component {
         </SearchForm>
       </SearchbarStyles>
     );
-    }
-    
-};
+  }
+}
+
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+}
